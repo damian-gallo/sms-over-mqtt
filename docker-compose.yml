@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  esme:
+    restart: unless-stopped
+    depends_on:
+      - smsc-simulator
+      - mqtt-broker
+    image: damiangallo/sms-over-mqtt:latest
+  smsc-simulator:
+    restart: unless-stopped
+    image: damiangallo/smsc-simulator:latest
+  mqtt-broker:
+    restart: unless-stopped
+    image: eclipse-mosquitto
+    command: "mosquitto -c /mosquitto-no-auth.conf"
+    ports:
+      - 1883:1883
