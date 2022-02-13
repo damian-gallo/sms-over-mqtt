@@ -9,5 +9,3 @@ RUN npm run build
 
 FROM nginx
 COPY --from=0 /home/node/app/build /usr/share/nginx/html
-RUN rm /etc/nginx/conf.d/default.conf
-COPY ./nginx.conf /etc/nginx/conf.d
