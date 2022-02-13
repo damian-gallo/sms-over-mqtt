@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  esme:
+    restart: unless-stopped
+    depends_on:
+      - smsc-simulator
+      - mqtt-broker
+    build:
+      context: ./esme
+      dockerfile: Dockerfile.dev
+    environment:
+      - LOG_LEVEL=debug
+    volumes:
+      - /app/node_modules
+      - ./esme:/app
+  web:
+    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./web
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    stdin_open: true
+    tty: true
+    ports: 
+      - 3000:3000
+    volumes:
+      - /home/node/app/node_modules
+      - ./web:/home/node/app
+  smsc-simulator:
+    restart: unless-stopped
+    image: damiangallo/smsc-simulator:latest
+  mqtt-broker:
+    restart: unless-stopped
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes: 
+      - ./mosquitto:/mosquitto/config/
